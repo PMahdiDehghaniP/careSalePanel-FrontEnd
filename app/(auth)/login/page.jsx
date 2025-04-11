@@ -1,51 +1,19 @@
 "use client";
 
-import { loginSchema } from "@/validations/loginSchema/loginSignUpSchema";
 import {
   Button,
+  Checkbox,
   Divider,
+  FormControlLabel,
+  Grid,
+  Stack,
   TextField,
   Typography,
-  Stack,
-  Card as MuiCard,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
-
-const Card = styled(MuiCard)(() => ({
-  display: "flex",
-  flexDirection: "column",
-  alignSelf: "center",
-  width: "100%",
-  padding: 32,
-  gap: 16,
-  margin: "auto",
-  maxWidth: 450,
-  backgroundColor: "#1f0a33",
-  border: "1px solid #1e293b",
-  boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
-  borderRadius: 12,
-}));
-
-const SignInContainer = styled(Stack)({
-  minHeight: "100dvh",
-  width: "100%",
-  padding: 16,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#0f172a",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    zIndex: -1,
-    inset: 0,
-    background: "radial-gradient(circle at center, #0f172a 0%, #020617 100%)",
-  },
-});
+import { loginSchema } from "@/validations/loginSchema/loginSignUpSchema";
 
 export default function SignIn() {
-  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       emailOrUsername: "",
@@ -56,32 +24,40 @@ export default function SignIn() {
       console.log(values);
     },
   });
-  const handleUsernameChange = (event) => {
-    formik.setFieldValue("emailOrUsername", event.target.value);
-  };
-  const handlePasswordChange = (event) => {
-    formik.setFieldValue("password", event.target.value);
-  };
-  const handleNavigate = (path) => {
-    router.push(path);
-  };
 
   return (
-    <SignInContainer>
-      <Card>
+    <Grid container sx={{ height: "100vh" }}>
+      <Grid
+        size={{ xs: 12, md: 5 }}
+        item
+        sx={{
+          background:
+            "linear-gradient(308deg, rgba(0, 0, 0, 1) 13%, rgba(0, 0, 89, 1) 67%, rgba(26, 26, 144, 1) 52%, rgba(1, 1, 43, 1) 77%)",
+          padding: { xs: "32px 16px", md: "64px 32px" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <Typography
-          variant="h5"
-          align="center"
-          sx={{ color: "white", fontWeight: 700 }}
+          variant="h4"
+          sx={{ fontWeight: "bold", color: "#2563eb", mb: 2 }}
         >
-          ورود به حساب کاربری
+          ورود به حساب
+        </Typography>
+        <Typography sx={{ mb: 4 }} color="white">
+          لطفاً ایمیل یا نام کاربری و رمز عبور خود را وارد کنید.
         </Typography>
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={2}>
             <TextField
-              onChange={(e) => handleUsernameChange(e)}
+              label="ایمیل یا نام کاربری"
+              name="emailOrUsername"
               type="text"
-              placeholder="نام کاربری یا ایمیل را وارد کنید"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.emailOrUsername}
+              placeholder="ایمیل یا نام کاربری را وارد کنید"
               fullWidth
               error={
                 formik.touched.emailOrUsername &&
@@ -106,8 +82,12 @@ export default function SignIn() {
               variant="outlined"
             />
             <TextField
-              onChange={(e) => handlePasswordChange(e)}
+              label="رمز عبور"
+              name="password"
               type="password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
               placeholder="رمز عبور را وارد کنید"
               fullWidth
               error={formik.touched.password && Boolean(formik.errors.password)}
@@ -125,51 +105,39 @@ export default function SignIn() {
                   style: { color: "white" },
                 },
               }}
-              variant="outlined"
             />
+
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "#2563eb", fontSize: "1rem" }}
+            >
+              فراموشی رمز عبور؟
+            </Button>
+
             <Button
               type="submit"
               variant="contained"
               fullWidth
-              sx={{ backgroundColor: "white", color: "black" }}
+              sx={{ backgroundColor: "#2563eb", fontSize: "1rem" }}
             >
               ورود
             </Button>
-            <Typography
-              variant="body2"
-              sx={{ textAlign: "center", color: "#60a5fa" }}
-            >
-              رمز عبور خود را فراموش کرده اید؟
-            </Typography>
           </Stack>
         </form>
-        <Divider
-          sx={{
-            color: "white",
-            "&::before, &::after": { borderColor: "#1e293b" },
-          }}
-        >
-          یا ورود با
-        </Divider>
-        <Stack spacing={2}>
-          <Button
-            fullWidth
-            variant="outlined"
-            sx={{ color: "white", borderColor: "#334155" }}
-          >
-            ورود با گوگل
-          </Button>
-          <Typography sx={{ color: "white", textAlign: "center" }}>
-            هنوز حساب کاربری ندارید؟{" "}
-            <span
-              onClick={() => handleNavigate("/signup")}
-              style={{ color: "#60a5fa", cursor: "pointer" }}
-            >
-              ثبت نام کنید
-            </span>
-          </Typography>
-        </Stack>
-      </Card>
-    </SignInContainer>
+      </Grid>
+      <Grid
+        item
+        size={{
+          xs: 0,
+          md: 7,
+        }}
+        sx={{
+          backgroundImage: "url('/login/loginImage.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+    </Grid>
   );
 }
