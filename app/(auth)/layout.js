@@ -7,7 +7,7 @@ export default function AuthLayout({ children }) {
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
-      bgcolor="#f5f5f5"
+      bgcolor="#070e16"
     >
       {children}
     </Box>

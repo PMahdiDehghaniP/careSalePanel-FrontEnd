@@ -1,19 +1,17 @@
 "use client";
 
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
+import { loginSchema } from "@/validations/loginSchema/loginSignUpSchema";
+import {
+  Button,
+  Divider,
+  TextField,
+  Typography,
+  Stack,
+  Card as MuiCard,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useFormik } from "formik";
+import { useRouter } from "next/navigation";
 
 const Card = styled(MuiCard)(() => ({
   display: "flex",
@@ -24,141 +22,153 @@ const Card = styled(MuiCard)(() => ({
   gap: 16,
   margin: "auto",
   maxWidth: 450,
-  boxShadow:
-    "0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 35px -5px rgba(0, 0, 0, 0.05)",
+  backgroundColor: "#1f0a33",
+  border: "1px solid #1e293b",
+  boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+  borderRadius: 12,
 }));
 
 const SignInContainer = styled(Stack)({
   minHeight: "100dvh",
+  width: "100%",
   padding: 16,
-  position: "relative",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#0f172a",
   "&::before": {
     content: '""',
-    display: "block",
     position: "absolute",
     zIndex: -1,
     inset: 0,
-    backgroundImage:
-      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-    backgroundRepeat: "no-repeat",
+    background: "radial-gradient(circle at center, #0f172a 0%, #020617 100%)",
   },
 });
 
 export default function SignIn() {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const isValid = validateInputs();
-    if (!isValid) return;
-
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const router = useRouter();
+  const formik = useFormik({
+    initialValues: {
+      emailOrUsername: "",
+      password: "",
+    },
+    validationSchema: loginSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+  const handleUsernameChange = (event) => {
+    formik.setFieldValue("emailOrUsername", event.target.value);
   };
-
-  const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
-    }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
-    }
-
-    return isValid;
+  const handlePasswordChange = (event) => {
+    formik.setFieldValue("password", event.target.value);
+  };
+  const handleNavigate = (path) => {
+    router.push(path);
   };
 
   return (
-    <SignInContainer direction="column" justifyContent="center">
-      <Card variant="outlined">
-        <Typography variant="h4" align="center">
-          Sign in
+    <SignInContainer>
+      <Card>
+        <Typography
+          variant="h5"
+          align="center"
+          sx={{ color: "white", fontWeight: 700 }}
+        >
+          ورود به حساب کاربری
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
+        <form onSubmit={formik.handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              onChange={(e) => handleUsernameChange(e)}
+              type="text"
+              placeholder="نام کاربری یا ایمیل را وارد کنید"
+              fullWidth
+              error={
+                formik.touched.emailOrUsername &&
+                Boolean(formik.errors.emailOrUsername)
+              }
+              helperText={
+                formik.touched.emailOrUsername && formik.errors.emailOrUsername
+              }
+              slotProps={{
+                input: {
+                  sx: {
+                    "& fieldset": {
+                      borderColor: "#ffffff",
+                    },
+                    color: "white",
+                  },
+                },
+                inputLabel: {
+                  sx: { color: "white" },
+                },
+              }}
+              variant="outlined"
+            />
+            <TextField
+              onChange={(e) => handlePasswordChange(e)}
+              type="password"
+              placeholder="رمز عبور را وارد کنید"
+              fullWidth
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+              slotProps={{
+                input: {
+                  sx: {
+                    "& fieldset": {
+                      borderColor: "#ffffff",
+                    },
+                    color: "white",
+                  },
+                },
+                inputLabel: {
+                  style: { color: "white" },
+                },
+              }}
+              variant="outlined"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ backgroundColor: "white", color: "black" }}
+            >
+              ورود
+            </Button>
+            <Typography
+              variant="body2"
+              sx={{ textAlign: "center", color: "#60a5fa" }}
+            >
+              رمز عبور خود را فراموش کرده اید؟
+            </Typography>
+          </Stack>
+        </form>
+        <Divider
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            gap: 2,
+            color: "white",
+            "&::before, &::after": { borderColor: "#1e293b" },
           }}
         >
-          <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <TextField
-              error={emailError}
-              helperText={emailErrorMessage}
-              id="email"
-              name="email"
-              placeholder="your@email.com"
-              required
-              fullWidth
-              autoComplete="email"
-              autoFocus
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <TextField
-              error={passwordError}
-              helperText={passwordErrorMessage}
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••"
-              required
-              fullWidth
-              autoComplete="current-password"
-            />
-          </FormControl>
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button type="submit" fullWidth variant="contained">
-            Sign in
+          یا ورود با
+        </Divider>
+        <Stack spacing={2}>
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ color: "white", borderColor: "#334155" }}
+          >
+            ورود با گوگل
           </Button>
-          <Link component="button" variant="body2">
-            Forgot your password?
-          </Link>
-        </Box>
-        <Divider>or</Divider>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Button fullWidth variant="outlined">
-            Sign in with Google
-          </Button>
-          <Button fullWidth variant="outlined">
-            Sign in with Facebook
-          </Button>
-          <Typography sx={{ textAlign: "center" }}>
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" variant="body2">
-              Sign up
-            </Link>
+          <Typography sx={{ color: "white", textAlign: "center" }}>
+            هنوز حساب کاربری ندارید؟{" "}
+            <span
+              onClick={() => handleNavigate("/signup")}
+              style={{ color: "#60a5fa", cursor: "pointer" }}
+            >
+              ثبت نام کنید
+            </span>
           </Typography>
-        </Box>
+        </Stack>
       </Card>
     </SignInContainer>
   );
