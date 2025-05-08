@@ -1,17 +1,9 @@
 "use client";
 
-import {
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import { loginSchema } from "@/validations/loginSchema/loginSignUpSchema";
+import { loginSchema } from "@/validations/loginAndSignUp/loginSignUpSchema";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const formik = useFormik({
@@ -24,6 +16,7 @@ export default function SignIn() {
       console.log(values);
     },
   });
+  const router = useRouter();
 
   return (
     <Grid container sx={{ height: "100vh" }}>
@@ -121,6 +114,14 @@ export default function SignIn() {
               sx={{ backgroundColor: "#2563eb", fontSize: "1rem" }}
             >
               ورود
+            </Button>
+            <Button
+              onClick={() => router.push("/signUp")}
+              variant="contained"
+              fullWidth
+              sx={{ backgroundColor: "#2563eb", fontSize: "1rem" }}
+            >
+              ثبت نام
             </Button>
           </Stack>
         </form>

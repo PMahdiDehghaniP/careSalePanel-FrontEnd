@@ -1,9 +1,5 @@
 import * as yup from "yup";
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const usernameRegex = /^[a-zA-Z0-9._%+-]+$/;
-const passwordRegex =
-  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?`~\-]).{8,}$/;
+import { emailRegex, passwordRegex, usernameRegex } from "../Regex";
 
 export const loginSchema = yup.object().shape({
   emailOrUsername: yup
