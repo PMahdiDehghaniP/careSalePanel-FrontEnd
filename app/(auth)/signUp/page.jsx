@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
 import signUpPageValidationSchema from "@/validations/loginAndSignUp/signUpSchema";
+import usePostRestData from "@/hooks/usePostRestData";
+import { LoadingButton } from "@mui/lab";
 const inputStyles = {
   input: { color: "white" },
   label: { color: "white" },
@@ -28,22 +29,23 @@ const formBoxStyle = {
   boxShadow: "0 10px 40px rgba(0, 0, 0, 0.6)",
 };
 export default function SignUp() {
+  const [signupUser, { loading: signupUserLoading }] =
+    usePostRestData("createuser");
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
-      userName: "",
+      username: "",
       phoneNumber: "",
       password: "",
       email: "",
     },
     validationSchema: signUpPageValidationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      values.phoneNumber = `+98${values.phoneNumber}`;
+      await signupUser(values);
     },
   });
-
-  const router = useRouter();
 
   return (
     <Grid
@@ -148,13 +150,13 @@ export default function SignUp() {
                 type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.userName}
+                value={formik.values.username}
                 placeholder="نام کاربری"
                 fullWidth
                 error={
-                  formik.touched.userName && Boolean(formik.errors.userName)
+                  formik.touched.username && Boolean(formik.errors.username)
                 }
-                helperText={formik.touched.userName && formik.errors.userName}
+                helperText={formik.touched.username && formik.errors.username}
                 sx={inputStyles}
                 variant="outlined"
               />
@@ -179,15 +181,15 @@ export default function SignUp() {
             </Grid>
 
             <Grid size={{ xs: 12, lg: 12, md: 12 }}>
-              <Button
-                onClick={() => router.push("/signUp")}
+              <LoadingButton
+                loading={signupUserLoading}
                 type="submit"
                 variant="contained"
                 fullWidth
                 sx={inputStyles}
               >
                 ثبت نام
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </form>

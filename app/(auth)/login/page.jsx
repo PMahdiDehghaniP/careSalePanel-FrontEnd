@@ -4,16 +4,20 @@ import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { loginSchema } from "@/validations/loginAndSignUp/loginSignUpSchema";
 import { useRouter } from "next/navigation";
+import { LoadingButton } from "@mui/lab";
+import usePostRestData from "@/hooks/usePostRestData";
 
 export default function SignIn() {
+  const [loginUser, { loading: loginUserLoading }] =
+    usePostRestData("loginuser");
   const formik = useFormik({
     initialValues: {
-      emailOrUsername: "",
+      usernameOrEmail: "",
       password: "",
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await loginUser(values);
     },
   });
   const router = useRouter();
@@ -45,19 +49,19 @@ export default function SignIn() {
           <Stack spacing={2}>
             <TextField
               label="ایمیل یا نام کاربری"
-              name="emailOrUsername"
+              name="usernameOrEmail"
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.emailOrUsername}
+              value={formik.values.usernameOrEmail}
               placeholder="ایمیل یا نام کاربری را وارد کنید"
               fullWidth
               error={
-                formik.touched.emailOrUsername &&
-                Boolean(formik.errors.emailOrUsername)
+                formik.touched.usernameOrEmail &&
+                Boolean(formik.errors.usernameOrEmail)
               }
               helperText={
-                formik.touched.emailOrUsername && formik.errors.emailOrUsername
+                formik.touched.usernameOrEmail && formik.errors.usernameOrEmail
               }
               slotProps={{
                 input: {
@@ -107,14 +111,15 @@ export default function SignIn() {
               فراموشی رمز عبور؟
             </Button>
 
-            <Button
+            <LoadingButton
               type="submit"
               variant="contained"
+              loading={loginUserLoading}
               fullWidth
               sx={{ backgroundColor: "#2563eb", fontSize: "1rem" }}
             >
               ورود
-            </Button>
+            </LoadingButton>
             <Button
               onClick={() => router.push("/signUp")}
               variant="contained"

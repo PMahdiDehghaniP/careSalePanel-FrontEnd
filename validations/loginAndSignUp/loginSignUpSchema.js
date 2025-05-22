@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { emailRegex, passwordRegex, usernameRegex } from "../Regex";
 
 export const loginSchema = yup.object().shape({
-  emailOrUsername: yup
+  usernameOrEmail: yup
     .string()
     .required("نام کاربری یا ایمیل ضروری است")
     .test(

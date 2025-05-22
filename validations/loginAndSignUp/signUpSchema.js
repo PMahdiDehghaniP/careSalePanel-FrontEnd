@@ -16,7 +16,7 @@ const signUpPageValidationSchema = yup.object().shape({
       passwordRegex,
       "پسورد باید شامل  حداقل  8 حرف نماد حروف بزرگ و کوچک و عدد باشد"
     ),
-  userName: yup.string().required("نام کاربری الزامی  است"),
+  username: yup.string().required("نام کاربری الزامی  است"),
   phoneNumber: yup
     .string()
     .required("شماره  موبایل الزامی است")
